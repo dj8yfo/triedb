@@ -414,6 +414,73 @@ impl DbCounter for MapWithCounterCached {
     }
 }
 
+impl DbCounter for Arc<MapWithCounter> {
+    // Insert value into db.
+    // Check if value exist before, if not exist, increment child counter.
+    fn gc_insert_node<F>(&self, key: H256, value: &[u8], child_extractor: F)
+    where
+        F: FnMut(&[u8]) -> Vec<H256>,
+    {
+        match self.data.entry(key) {
+            Entry::Occupied(_) => {}
+            Entry::Vacant(v) => {
+                let rlp = make_rlp_wrapper!(DbValueRef::Plain(&value), RlpPath::default());
+                let node = MerkleNode::decode(rlp).expect("Unable to decode Merkle Node");
+                trace!("inserting node {}=>{:?}", key, node);
+                for hash in ReachableHashes::collect(&node, child_extractor).childs() {
+                    self.increase(hash);
+                }
+                v.insert(value.to_vec());
+            }
+        };
+    }
+    fn gc_count(&self, key: H256) -> usize {
+        self.counter.get(&key).map(|v| *v).unwrap_or_default()
+    }
+
+    // Return true if node data is exist, and it counter more than 0;
+    fn node_exist(&self, key: H256) -> bool {
+        self.data.get(&key).is_some() && self.gc_count(key) > 0
+    }
+
+    // atomic operation:
+    // 1. check if key counter didn't increment in other thread.
+    // 2. remove key if counter == 0.
+    // 3. find all childs
+    // 4. decrease child counters
+    // 5. return list of childs with counter == 0
+    fn gc_try_cleanup_node<F>(&self, key: H256, child_extractor: F) -> Vec<H256>
+    where
+        F: FnMut(&[u8]) -> Vec<H256>,
+    {
+        match self.data.entry(key) {
+            Entry::Occupied(entry) => {
+                // in this code we lock data, so it's okay to check counter from separate function
+                if self.gc_count(key) == 0 {
+                    let value = entry.remove();
+                    let rlp = make_rlp_wrapper!(DbValueRef::Plain(&value), RlpPath::default());
+                    let node = MerkleNode::decode(rlp).expect("Unable to decode Merkle Node");
+                    return ReachableHashes::collect(&node, child_extractor)
+                        .childs()
+                        .into_iter()
+                        .filter(|k| self.decrease(*k) == 0)
+                        .collect();
+                }
+            }
+            Entry::Vacant(_) => {}
+        };
+        vec![]
+    }
+
+    fn gc_pin_root(&self, key: H256) {
+        self.increase(key);
+    }
+
+    fn gc_unpin_root(&self, key: H256) -> bool {
+        self.decrease(key) == 0
+    }
+}
+
 impl Database for Arc<MapWithCounter> {
     fn get(&self, key: H256) -> DbValueRef {
         DbValueRef::Dashmap(Arc::new(self.data

@@ -1,0 +1,105 @@
+     Running benches/compare_backends.rs (target/release/deps/compare_backends-99218c4cf9e68344)
+WARNING: HTML report generation will become a non-default optional feature in Criterion.rs 0.4.0.
+This feature is being moved to cargo-criterion (https://github.com/bheisler/cargo-criterion) and will be optional in a future version of Criterion.rs. To silence this warning, either switch to cargo-criteri
+on or enable the 'html_reports' feature in your Cargo.toml.
+
+bench get BTreeMap      time:   [22.241 us 22.835 us 23.364 us]                               
+                        change: [+2.2336% +8.0164% +14.670%] (p = 0.01 < 0.05)
+                        Performance has regressed.
+
+bench get DashMap       time:   [13.665 us 14.073 us 14.429 us]                              
+                        change: [-16.391% -11.276% -5.7651%] (p = 0.00 < 0.05)
+                        Performance has improved.
+
+bench get RocksDB       time:   [63.592 us 64.037 us 64.472 us]                              
+                        change: [-6.6461% -5.7574% -4.8397%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high severe
+
+Benchmarking bench get MemoryTrieMut: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 6.2s, enable flat sampling, or reduce sample count to 60.
+bench get MemoryTrieMut time:   [1.2434 ms 1.2463 ms 1.2495 ms]                                     
+                        change: [+3.0212% +3.7580% +4.4793%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+
+Benchmarking bench get TrieCollection<Mem>: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 6.2s, enable flat sampling, or reduce sample count to 60.
+bench get TrieCollection<Mem>                                                                             
+                        time:   [1.1247 ms 1.1283 ms 1.1342 ms]
+                        change: [-7.5415% -6.7819% -6.0114%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high severe
+
+Benchmarking bench get TrieCollection<Mem> (no-cache): Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 6.5s, enable flat sampling, or reduce sample count to 60.
+bench get TrieCollection<Mem> (no-cache)                                                                             
+                        time:   [1.1751 ms 1.1789 ms 1.1827 ms]
+                        change: [-12.346% -11.923% -11.549%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 6 outliers among 100 measurements (6.00%)
+  1 (1.00%) low mild
+  4 (4.00%) high mild
+  1 (1.00%) high severe
+
+Benchmarking bench get TrieCollection<Rocks>: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 6.5s, enable flat sampling, or reduce sample count to 60.
+bench get TrieCollection<Rocks>                                                                             
+                        time:   [1.1352 ms 1.1407 ms 1.1466 ms]
+                        change: [-3.3812% -2.5567% -1.7642%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 8 outliers among 100 measurements (8.00%)
+  8 (8.00%) high mild
+
+Benchmarking bench get TrieCollection<Rocks> (no-cache): Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 8.5s, enable flat sampling, or reduce sample count to 50.
+bench get TrieCollection<Rocks> (no-cache)                                                                             
+                        time:   [1.4209 ms 1.4284 ms 1.4366 ms]
+                        change: [-1.3319% -0.5867% +0.1873%] (p = 0.14 > 0.05)
+                        No change in performance detected.
+Found 4 outliers among 100 measurements (4.00%)
+  1 (1.00%) high mild
+  3 (3.00%) high severe
+
+bench insert BTreeMap   time:   [47.632 us 49.244 us 50.591 us]                                  
+                        change: [-8.3873% -3.7079% +0.8725%] (p = 0.14 > 0.05)
+                        No change in performance detected.
+
+bench insert DashMap    time:   [29.023 us 29.770 us 30.407 us]                                 
+                        change: [-1.5796% +2.7198% +7.2007%] (p = 0.23 > 0.05)
+                        No change in performance detected.
+
+bench insert RocksDB    time:   [268.86 us 269.96 us 271.11 us]                                 
+                        change: [-2.5351% -1.9552% -1.3928%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 5 outliers among 100 measurements (5.00%)
+  3 (3.00%) low mild
+  2 (2.00%) high mild
+
+bench insert MemoryTrieMut                                                                            
+                        time:   [7.8151 ms 7.8365 ms 7.8604 ms]
+                        change: [+0.3804% +0.7370% +1.0913%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 8 outliers among 100 measurements (8.00%)
+  5 (5.00%) high mild
+  3 (3.00%) high severe
+
+bench insert TrieCollection<Mem>                                                                            
+                        time:   [8.9845 ms 8.9975 ms 9.0121 ms]
+                        change: [-1.4059% -0.9989% -0.5933%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 8 outliers among 100 measurements (8.00%)
+  3 (3.00%) high mild
+  5 (5.00%) high severe
+
+bench insert TrieCollection<Rocks>                                                                            
+                        time:   [17.884 ms 17.931 ms 17.987 ms]
+                        change: [-0.5045% -0.2154% +0.1037%] (p = 0.20 > 0.05)
+                        No change in performance detected.
+Found 5 outliers among 100 measurements (5.00%)
+  1 (1.00%) high mild
+  4 (4.00%) high severe

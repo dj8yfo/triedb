@@ -45,6 +45,6 @@ default = ["rocksdb", "tracing-enable"]
 rocksdb = ["rocksdb_lib"]
 tracing-enable = ["tracing-attributes", "tracing"]
 
-# [[bench]]
-# name = "compare_backends"
-# harness = false
+[[bench]]
+name = "compare_backends"
+harness = false
