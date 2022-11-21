@@ -14,7 +14,6 @@ use merkle::{nibble, MerkleNode, MerkleValue};
 pub use rocksdb_lib;
 pub mod gc;
 pub mod merkle;
-pub mod state_diff;
 pub use memory::*;
 pub use mutable::*;
 
@@ -27,7 +26,6 @@ mod impls;
 mod memory;
 mod mutable;
 mod ops;
-mod walker;
 
 use ops::{build, delete, get, insert};
 
